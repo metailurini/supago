@@ -12,10 +12,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-// load from env
-// override config from env
-// return core package
-
 var yamlConfig = []byte(`
 postgres: postgresql://postgres:this13dewevwk454f3f25424523f@db.ddhcxdcfqdhkyxrbpfnh.supabase.co:5432/postgres
 `)
