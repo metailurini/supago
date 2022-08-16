@@ -1,4 +1,4 @@
-package config
+package setupcfg
 
 type Setup interface {
 	LoadConfig(cfg Config) error

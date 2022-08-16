@@ -12,36 +12,21 @@ import (
 	"github.com/spf13/viper"
 )
 
-var yamlConfig = []byte(`postgres: postgresql://postgres:this13dewevwk454f3f25424523f@db.ddhcxdcfqdhkyxrbpfnh.supabase.co:5432/postgres`)
+var yamlCfg = []byte(`postgres: postgresql://postgres:this13dewevwk454f3f25424523f@db.ddhcxdcfqdhkyxrbpfnh.supabase.co:5432/postgres`)
 
 func main() {
-	viper.SetConfigType("YAML")
 	viper.Set("context", context.Background())
-
-	if err := viper.ReadConfig(bytes.NewBuffer(yamlConfig)); err != nil {
+	viper.SetConfigType("YAML")
+	if err := viper.ReadConfig(bytes.NewBuffer(yamlCfg)); err != nil {
 		panic(err)
 	}
 
 	ps := postgresql.NewPostgreSQL()
-	showPostgre(ps)
-}
-
-type ViperWrapper struct{}
-
-func (v *ViperWrapper) Get(key string) interface{} {
-	return viper.Get(key)
-}
-
-func (v *ViperWrapper) Set(key string, value interface{}) {
-	viper.Set(key, value)
-}
-
-func showPostgre(su config.Setup) {
-	if err := su.LoadConfig(&ViperWrapper{}); err != nil {
+	if err := ps.LoadConfig(config.NewViperCfg()); err != nil {
 		panic(err)
 	}
 
-	conn := su.CoreValue().(*pgx.Conn)
+	conn := ps.CoreValue().(*pgx.Conn)
 	defer conn.Close(context.Background())
 
 	var userid int

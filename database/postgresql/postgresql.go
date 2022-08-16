@@ -4,33 +4,38 @@ import (
 	"context"
 	"errors"
 
-	"github.com/metailurini/supago/config"
+	"github.com/metailurini/supago/setupcfg"
 
 	"github.com/jackc/pgx/v4"
 )
 
+var (
+	contextErr     = errors.New("can not get context")
+	postgresURIErr = errors.New("can not get URI")
+)
+
 type PostgreSQLSetup interface {
-	config.Setup
+	setupcfg.Setup
 }
 
 type postgresql struct {
-	cfg PostgreSQLConfig
-	con *pgx.Conn
+	cfg  PostgreSQLConfig
+	conn *pgx.Conn
 }
 
 func NewPostgreSQL() PostgreSQLSetup {
 	return new(postgresql)
 }
 
-func (p *postgresql) LoadConfig(cfg config.Config) error {
+func (p *postgresql) LoadConfig(cfg setupcfg.Config) error {
 	ctx, ok := cfg.Get("context").(context.Context)
 	if !ok {
-		return errors.New("can not get context")
+		return contextErr
 	}
 
 	uri, ok := cfg.Get("postgres").(string)
 	if !ok {
-		return errors.New("can not get uri")
+		return postgresURIErr
 	}
 
 	conn, err := pgx.Connect(ctx, uri)
@@ -38,23 +43,23 @@ func (p *postgresql) LoadConfig(cfg config.Config) error {
 		return err
 	}
 
-	p.con = conn
+	p.conn = conn
 	p.cfg = &postgreSQLConfig{
 		conn: conn.Config(),
 	}
 	return nil
 }
 
-func (p *postgresql) Apply(setup func(config.Config) config.Config) {
+func (p *postgresql) Apply(setup func(setupcfg.Config) setupcfg.Config) {
 	setup(p.cfg)
 }
 
 func (p *postgresql) CoreValue() interface{} {
-	return p.con
+	return p.conn
 }
 
 type PostgreSQLConfig interface {
-	config.Config
+	setupcfg.Config
 	Config() *pgx.ConnConfig
 }
 
