@@ -7,6 +7,7 @@ import (
 
 	"github.com/metailurini/supago/config"
 	"github.com/metailurini/supago/database/postgresql"
+	"github.com/metailurini/supago/setupcfg"
 
 	"github.com/jackc/pgx/v4"
 	"github.com/spf13/viper"
@@ -15,14 +16,21 @@ import (
 var yamlCfg = []byte(`postgres: postgresql://postgres:this13dewevwk454f3f25424523f@db.ddhcxdcfqdhkyxrbpfnh.supabase.co:5432/postgres`)
 
 func main() {
-	viper.Set("context", context.Background())
-	viper.SetConfigType("YAML")
-	if err := viper.ReadConfig(bytes.NewBuffer(yamlCfg)); err != nil {
-		panic(err)
-	}
+
+	vs := config.NewViperSetup()
+	vs.Apply(func(c setupcfg.Config) {
+		v := c.CoreValue().(*viper.Viper)
+
+		v.Set("context", context.Background())
+		v.SetConfigType("YAML")
+
+		if err := v.ReadConfig(bytes.NewBuffer(yamlCfg)); err != nil {
+			panic(err)
+		}
+	})
 
 	ps := postgresql.NewPostgreSQL()
-	if err := ps.LoadConfig(config.NewViperCfg()); err != nil {
+	if err := ps.LoadConfig(vs.GetConfig()); err != nil {
 		panic(err)
 	}
 

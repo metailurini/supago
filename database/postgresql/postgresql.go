@@ -19,7 +19,7 @@ type PostgreSQLSetup interface {
 }
 
 type postgresql struct {
-	cfg  PostgreSQLConfig
+	cfg  setupcfg.Config
 	conn *pgx.Conn
 }
 
@@ -50,7 +50,11 @@ func (p *postgresql) LoadConfig(cfg setupcfg.Config) error {
 	return nil
 }
 
-func (p *postgresql) Apply(setup func(setupcfg.Config) setupcfg.Config) {
+func (p *postgresql) GetConfig() setupcfg.Config {
+	return p.cfg
+}
+
+func (p *postgresql) Apply(setup func(setupcfg.Config)) {
 	setup(p.cfg)
 }
 
@@ -59,7 +63,6 @@ func (p *postgresql) CoreValue() interface{} {
 }
 
 type PostgreSQLConfig interface {
-	setupcfg.Config
 	Config() *pgx.ConnConfig
 }
 
@@ -76,5 +79,9 @@ func (p *postgreSQLConfig) Set(key string, value interface{}) {
 }
 
 func (p *postgreSQLConfig) Config() *pgx.ConnConfig {
+	return p.Config()
+}
+
+func (p *postgreSQLConfig) CoreValue() interface{} {
 	return p.Config()
 }
