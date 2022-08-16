@@ -12,9 +12,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-var yamlConfig = []byte(`
-postgres: postgresql://postgres:this13dewevwk454f3f25424523f@db.ddhcxdcfqdhkyxrbpfnh.supabase.co:5432/postgres
-`)
+var yamlConfig = []byte(`postgres: postgresql://postgres:this13dewevwk454f3f25424523f@db.ddhcxdcfqdhkyxrbpfnh.supabase.co:5432/postgres`)
 
 func main() {
 	viper.SetConfigType("YAML")
