@@ -3,7 +3,7 @@ package setupcfg
 type Setup interface {
 	LoadConfig(cfg Config) error
 	GetConfig() Config
-	Apply(setup func(Config))
+	Apply(setup func(Config) error) error
 	Value() interface{}
 }
 

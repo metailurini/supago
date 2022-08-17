@@ -46,8 +46,8 @@ func (v *viberSetup) GetConfig() setupcfg.Config {
 	return v.viper
 }
 
-func (v *viberSetup) Apply(setup func(setupcfg.Config)) {
-	setup(v.GetConfig())
+func (v *viberSetup) Apply(setup func(setupcfg.Config) error) error {
+	return setup(v.GetConfig())
 }
 
 func (v *viberSetup) Value() interface{} {

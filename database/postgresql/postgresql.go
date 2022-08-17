@@ -23,7 +23,7 @@ type postgresql struct {
 	conn *pgx.Conn
 }
 
-func NewPostgreSQL() PostgreSQLSetup {
+func NewPostgreSQLSetup() PostgreSQLSetup {
 	return new(postgresql)
 }
 
@@ -33,7 +33,7 @@ func (p *postgresql) LoadConfig(cfg setupcfg.Config) error {
 		return contextErr
 	}
 
-	uri, ok := cfg.Get("postgres").(string)
+	uri, ok := cfg.Get("postgresql").(string)
 	if !ok {
 		return postgresURIErr
 	}
@@ -54,8 +54,8 @@ func (p *postgresql) GetConfig() setupcfg.Config {
 	return p.cfg
 }
 
-func (p *postgresql) Apply(setup func(setupcfg.Config)) {
-	setup(p.cfg)
+func (p *postgresql) Apply(setup func(setupcfg.Config) error) error {
+	return setup(p.cfg)
 }
 
 func (p *postgresql) Value() interface{} {
