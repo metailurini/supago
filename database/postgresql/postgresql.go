@@ -58,7 +58,7 @@ func (p *postgresql) Apply(setup func(setupcfg.Config)) {
 	setup(p.cfg)
 }
 
-func (p *postgresql) CoreValue() interface{} {
+func (p *postgresql) Value() interface{} {
 	return p.conn
 }
 
@@ -82,6 +82,6 @@ func (p *postgreSQLConfig) Config() *pgx.ConnConfig {
 	return p.Config()
 }
 
-func (p *postgreSQLConfig) CoreValue() interface{} {
+func (p *postgreSQLConfig) Value() interface{} {
 	return p.Config()
 }

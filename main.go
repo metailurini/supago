@@ -16,10 +16,9 @@ import (
 var yamlCfg = []byte(`postgres: postgresql://postgres:this13dewevwk454f3f25424523f@db.ddhcxdcfqdhkyxrbpfnh.supabase.co:5432/postgres`)
 
 func main() {
-
 	vs := config.NewViperSetup()
 	vs.Apply(func(c setupcfg.Config) {
-		v := c.CoreValue().(*viper.Viper)
+		v := c.Value().(*viper.Viper)
 
 		v.Set("context", context.Background())
 		v.SetConfigType("YAML")
@@ -34,7 +33,7 @@ func main() {
 		panic(err)
 	}
 
-	conn := ps.CoreValue().(*pgx.Conn)
+	conn := ps.Value().(*pgx.Conn)
 	defer conn.Close(context.Background())
 
 	var userid int

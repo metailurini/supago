@@ -26,7 +26,7 @@ func (v *viperCfg) Set(key string, value interface{}) {
 	viper.Set(key, value)
 }
 
-func (v *viperCfg) CoreValue() interface{} {
+func (v *viperCfg) Value() interface{} {
 	return v.viper
 }
 
@@ -50,7 +50,7 @@ func (v *viberSetup) Apply(setup func(setupcfg.Config)) {
 	setup(v.GetConfig())
 }
 
-func (v *viberSetup) CoreValue() interface{} {
+func (v *viberSetup) Value() interface{} {
 	return v.viper
 }
 
