@@ -3,6 +3,7 @@ package util
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/metailurini/supago/config"
 	"github.com/metailurini/supago/database/postgresql"
@@ -34,5 +35,10 @@ func PostgreSQLLoadEnvConfig(ps postgresql.PostgreSQLSetup, vs config.ViberSetup
 		return err
 	}
 
-	return ps.LoadConfig(vs.GetConfig())
+	if err := ps.LoadConfig(vs.GetConfig()); err != nil {
+		return err
+	}
+	fmt.Printf("ps.Value(): %v\n", ps.Value())
+
+	return nil
 }

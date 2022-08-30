@@ -14,12 +14,32 @@ var (
 	postgresURIErr = errors.New("can not get URI")
 )
 
+type PostgreSQLConfig interface {
+	setupcfg.Config
+}
+
+type postgreSQLConfig struct {
+	conn *pgx.ConnConfig
+}
+
+func (p *postgreSQLConfig) Get(key string) interface{} {
+	panic("not implemented") // TODO: Implement
+}
+
+func (p *postgreSQLConfig) Set(key string, value interface{}) {
+	panic("not implemented") // TODO: Implement
+}
+
+func (p *postgreSQLConfig) Value() interface{} {
+	return p.conn.Config
+}
+
 type PostgreSQLSetup interface {
 	setupcfg.Setup
 }
 
 type postgresql struct {
-	cfg  setupcfg.Config
+	cfg  PostgreSQLConfig
 	conn *pgx.Conn
 }
 
@@ -60,28 +80,4 @@ func (p *postgresql) Apply(setup func(setupcfg.Config) error) error {
 
 func (p *postgresql) Value() interface{} {
 	return p.conn
-}
-
-type PostgreSQLConfig interface {
-	Config() *pgx.ConnConfig
-}
-
-type postgreSQLConfig struct {
-	conn *pgx.ConnConfig
-}
-
-func (p *postgreSQLConfig) Get(key string) interface{} {
-	panic("not implemented") // TODO: Implement
-}
-
-func (p *postgreSQLConfig) Set(key string, value interface{}) {
-	panic("not implemented") // TODO: Implement
-}
-
-func (p *postgreSQLConfig) Config() *pgx.ConnConfig {
-	return p.Config()
-}
-
-func (p *postgreSQLConfig) Value() interface{} {
-	return p.Config()
 }
