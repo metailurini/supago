@@ -4,9 +4,8 @@ import (
 	"context"
 	"errors"
 
+	"github.com/metailurini/supago/database/postgresql/adapter"
 	"github.com/metailurini/supago/setupcfg"
-
-	"github.com/jackc/pgx/v4"
 )
 
 var (
@@ -19,7 +18,7 @@ type PostgreSQLConfig interface {
 }
 
 type postgreSQLConfig struct {
-	conn *pgx.ConnConfig
+	cfg interface{}
 }
 
 func (p *postgreSQLConfig) Get(key string) interface{} {
@@ -31,7 +30,7 @@ func (p *postgreSQLConfig) Set(key string, value interface{}) {
 }
 
 func (p *postgreSQLConfig) Value() interface{} {
-	return p.conn.Config
+	return p.cfg
 }
 
 type PostgreSQLSetup interface {
@@ -40,7 +39,7 @@ type PostgreSQLSetup interface {
 
 type postgresql struct {
 	cfg  PostgreSQLConfig
-	conn *pgx.Conn
+	conn interface{}
 }
 
 func NewPostgreSQLSetup() PostgreSQLSetup {
@@ -58,14 +57,15 @@ func (p *postgresql) LoadConfig(cfg setupcfg.Config) error {
 		return postgresURIErr
 	}
 
-	conn, err := pgx.Connect(ctx, uri)
+	_, adt := adapter.GetAdapter()
+	conn, err := adt.Connect(ctx, uri)
 	if err != nil {
 		return err
 	}
 
 	p.conn = conn
 	p.cfg = &postgreSQLConfig{
-		conn: conn.Config(),
+		cfg: adt.Config(),
 	}
 	return nil
 }
