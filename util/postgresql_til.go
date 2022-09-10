@@ -7,6 +7,7 @@ import (
 	"github.com/metailurini/supago/config"
 	"github.com/metailurini/supago/database/postgresql"
 	"github.com/metailurini/supago/setupcfg"
+
 	"github.com/spf13/viper"
 )
 

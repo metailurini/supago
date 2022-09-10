@@ -11,9 +11,10 @@ import (
 	"github.com/metailurini/supago/database/postgresql/adapter"
 	"github.com/metailurini/supago/mocks/mock_adapter"
 	"github.com/metailurini/supago/setupcfg"
-	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+
+	"github.com/spf13/viper"
 )
 
 func TestPostgreSQLLoadEnvConfig(t *testing.T) {
