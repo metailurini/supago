@@ -1,40 +1,17 @@
 package util
 
 import (
-	"context"
-	"errors"
-
 	"github.com/metailurini/supago/config"
 	"github.com/metailurini/supago/database/postgresql"
 	"github.com/metailurini/supago/setupcfg"
-
-	"github.com/spf13/viper"
 )
 
-func PostgreSQLLoadEnvConfig(ps postgresql.PostgreSQLSetup, vs config.ViberSetup) error {
-	if err := vs.Apply(func(c setupcfg.Config) error {
-		v, ok := c.Value().(*viper.Viper)
-		if !ok {
-			return errors.New("can not apply config for viber")
-		}
-
-		if err := v.BindEnv("POSTGRES_URI"); err != nil {
+func PostgreSQLLoadEnvConfig(ps postgresql.PostgreSQLSetup, vs config.ViberSetup, configFuncs ...func(setupcfg.Config) error) error {
+	configFuncs = append(configFuncs, config.Viper_EnvPostgresql)
+	for _, configFunc := range configFuncs {
+		if err := vs.Apply(configFunc); err != nil {
 			return err
 		}
-
-		uri, ok := v.Get("POSTGRES_URI").(string)
-		if !ok {
-			return errors.New("can not get postgres uri")
-		}
-
-		v.Set("postgresql", uri)
-		if v.Get("context") == nil {
-			v.Set("context", context.Background())
-		}
-
-		return nil
-	}); err != nil {
-		return err
 	}
 
 	if err := ps.LoadConfig(vs.GetConfig()); err != nil {

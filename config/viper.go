@@ -1,6 +1,9 @@
 package config
 
 import (
+	"context"
+	"errors"
+
 	"github.com/metailurini/supago/setupcfg"
 
 	"github.com/spf13/viper"
@@ -58,4 +61,24 @@ func NewViperSetup() ViberSetup {
 	return &viberSetup{
 		viper: NewViperCfg(viper.GetViper()),
 	}
+}
+
+func Viper_EnvPostgresql(c setupcfg.Config) error {
+	v, ok := c.Value().(*viper.Viper)
+	if !ok {
+		return errors.New("can not apply config for viber")
+	}
+
+	if err := v.BindEnv("POSTGRES_URI"); err != nil {
+		return err
+	}
+
+	uri, _ := v.Get("POSTGRES_URI").(string)
+	v.Set("postgresql", uri)
+
+	if v.Get("context") == nil {
+		v.Set("context", context.Background())
+	}
+
+	return nil
 }

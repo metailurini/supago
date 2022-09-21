@@ -11,10 +11,10 @@ import (
 	"github.com/metailurini/supago/database/postgresql/adapter"
 	"github.com/metailurini/supago/mocks/mock_adapter"
 	"github.com/metailurini/supago/setupcfg"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 
 	"github.com/spf13/viper"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestPostgreSQLLoadEnvConfig(t *testing.T) {
@@ -32,15 +32,6 @@ func TestPostgreSQLLoadEnvConfig(t *testing.T) {
 		wantErr    bool
 		inspectErr func(err error, t *testing.T) //use for more precise error evaluation after test
 	}{
-		{
-			name: "missing postgresql uri",
-			args: func(t *testing.T) args {
-				vs := config.NewViperSetup()
-				ps := postgresql.NewPostgreSQLSetup()
-				return args{vs: vs, ps: ps}
-			},
-			wantErr: true,
-		},
 		{
 			name: "happy case: with default context",
 			args: func(t *testing.T) args {
